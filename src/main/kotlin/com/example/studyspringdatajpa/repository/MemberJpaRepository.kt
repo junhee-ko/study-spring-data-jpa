@@ -56,4 +56,13 @@ class MemberJpaRepository(
 
         return resultList
     }
+
+    fun findByUsername(username: String): MutableList<Member> {
+        val query = em.createNamedQuery("Member.findByUsername", Member::class.java)
+            .setParameter("username", username)
+
+        val resultList: MutableList<Member> = query.resultList
+
+        return resultList
+    }
 }

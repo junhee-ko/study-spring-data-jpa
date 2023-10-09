@@ -3,6 +3,10 @@ package com.example.studyspringdatajpa.entity
 import jakarta.persistence.*
 
 @Entity
+@NamedQuery(
+    name = "Member.findByUsername",
+    query = "select m from Member m where m.username = :username"
+)
 class Member(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +20,7 @@ class Member(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     var team: Team?
-){
+) {
 
     override fun toString(): String {
         return "Member(id=$id, username='$username', age=$age)"
