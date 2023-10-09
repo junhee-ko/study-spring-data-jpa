@@ -124,6 +124,17 @@ class MemberRepositoryTest{
         result.forEach {
             println(it)
         }
+    }
 
+    @Test
+    fun findByNames() {
+        val member1 = Member(username = "member1", age = 20, team = null)
+        val member2 = Member(username = "member2", age = 30, team = null)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        val result: List<Member> = memberRepository.findByNames(listOf("member1", "member2"))
+
+        assertThat(result.size).isEqualTo(2)
     }
 }
