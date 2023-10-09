@@ -17,6 +17,12 @@ class MemberRepositoryTest{
     private lateinit var memberRepository: MemberRepository
 
     @Test
+    fun `repository class`() {
+        println(memberRepository)             // org.springframework.data.jpa.repository.support.SimpleJpaRepository@6a4238ff
+        println(memberRepository::class.java) // class jdk.proxy2.$Proxy118
+    }
+
+    @Test
     fun testMember() {
         val member = Member(username = "jko", age = 30, team = null)
         val savedMember = memberRepository.save(member)
@@ -26,5 +32,29 @@ class MemberRepositoryTest{
         assertThat(findMember.id).isEqualTo(member.id)
         assertThat(findMember.username).isEqualTo(member.username)
         assertThat(findMember).isEqualTo(member)
+    }
+
+    @Test
+    fun `basic CRUD`() {
+        val member1 = Member(username = "member1", age = 20, team = null)
+        val member2 = Member(username = "member2", age = 30, team = null)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        val findMember1 = memberRepository.findById(member1.id).get()
+        val findMember2 = memberRepository.findById(member2.id).get()
+        assertThat(findMember1).isEqualTo(member1)
+        assertThat(findMember2).isEqualTo(member2)
+
+        val all = memberRepository.findAll()
+        assertThat(all.size).isEqualTo(2)
+
+        val count = memberRepository.count()
+        assertThat(count).isEqualTo(2)
+
+        memberRepository.delete(member1)
+        memberRepository.delete(member2)
+        val deletedCount = memberRepository.count()
+        assertThat(deletedCount).isEqualTo(0)
     }
 }
