@@ -97,4 +97,33 @@ class MemberRepositoryTest{
         assertThat(result.size).isEqualTo(1)
         assertThat(result.get(0)).isEqualTo(member1)
     }
+
+    @Test
+    fun findUsernameList() {
+        val member1 = Member(username = "member1", age = 20, team = null)
+        val member2 = Member(username = "member2", age = 30, team = null)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        val result: List<String> = memberRepository.findUsernameList()
+
+        result.forEach{
+            println(it)
+        }
+    }
+
+    @Test
+    fun findMemberDto() {
+        val member1 = Member(username = "member1", age = 20, team = null)
+        val member2 = Member(username = "member2", age = 30, team = null)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        val result = memberRepository.findMemberDto()
+
+        result.forEach {
+            println(it)
+        }
+
+    }
 }

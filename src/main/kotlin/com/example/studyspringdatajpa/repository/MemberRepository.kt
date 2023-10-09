@@ -1,5 +1,6 @@
 package com.example.studyspringdatajpa.repository
 
+import com.example.studyspringdatajpa.dto.MemberDto
 import com.example.studyspringdatajpa.entity.Member
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -14,4 +15,10 @@ interface MemberRepository: JpaRepository<Member, Long>{
 
     @Query("select m from Member m where m.username = :username and m.age = :age") // 이름이 없는 namedQuery
     fun findMember(@Param("username") username: String, @Param("age") age: Int): List<Member>
+
+    @Query("select m.username from Member m")
+    fun findUsernameList(): List<String>
+
+    @Query("select new com.example.studyspringdatajpa.dto.MemberDto(m.id, m.username, m.age) from Member m")
+    fun findMemberDto(): List<MemberDto>
 }
