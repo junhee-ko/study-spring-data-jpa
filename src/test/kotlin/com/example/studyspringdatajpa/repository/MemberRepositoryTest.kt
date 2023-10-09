@@ -18,7 +18,7 @@ class MemberRepositoryTest{
 
     @Test
     fun testMember() {
-        val member = Member(username = "jko")
+        val member = Member(username = "jko", age = 30, team = null)
         val savedMember = memberRepository.save(member)
 
         val findMember = memberRepository.findById(savedMember.id).get()

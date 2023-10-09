@@ -18,7 +18,7 @@ class MemberJpaRepositoryTest{
 
     @Test
     fun testMember() {
-        val member = Member(username = "jko")
+        val member = Member(username = "jko", age = 30, team = null)
         val savedMember = memberJpaRepository.save(member)
 
         val findMember = memberJpaRepository.find(savedMember.id)
