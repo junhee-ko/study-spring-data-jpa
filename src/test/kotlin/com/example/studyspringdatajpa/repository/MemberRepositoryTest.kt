@@ -1,6 +1,8 @@
 package com.example.studyspringdatajpa.repository
 
 import com.example.studyspringdatajpa.entity.Member
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +21,9 @@ class MemberRepositoryTest{
 
     @Autowired
     private lateinit var memberRepository: MemberRepository
+
+    @Autowired
+    private lateinit var em: EntityManager
 
     @Test
     fun `repository class`() {
@@ -236,5 +241,45 @@ class MemberRepositoryTest{
             age = 20,
             pageable = pageRequest,
         )
+    }
+
+    @Test
+    fun bulkUpdate(){
+        val member1 = Member(username = "member1", age = 18, team = null)
+        val member2 = Member(username = "member2", age = 19, team = null)
+        val member3 = Member(username = "member3", age = 20, team = null)
+        val member4 = Member(username = "member4", age = 21, team = null)
+        val member5 = Member(username = "member5", age = 22, team = null)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+        memberRepository.save(member3)
+        memberRepository.save(member4)
+        memberRepository.save(member5)
+
+        val resultCount = memberRepository.bulkAgePlus(20)
+
+        assertThat(resultCount).isEqualTo(3)
+    }
+
+    @Test
+    fun bulkUpdateWithEntityMangerClear(){
+        val member1 = Member(username = "member1", age = 18, team = null)
+        val member2 = Member(username = "member2", age = 19, team = null)
+        val member3 = Member(username = "member3", age = 20, team = null)
+        val member4 = Member(username = "member4", age = 21, team = null)
+        val member5 = Member(username = "member5", age = 22, team = null)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+        memberRepository.save(member3)
+        memberRepository.save(member4)
+        memberRepository.save(member5)
+
+        val resultCount = memberRepository.bulkAgePlus(20)
+        // em.clear() // 를 하거나, @Modifying(clearAutomatically = true)
+
+        val result: List<Member> = memberRepository.findByUsername("member5")
+        println("findByUsername: $result")
+
+        assertThat(resultCount).isEqualTo(3)
     }
 }

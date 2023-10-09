@@ -3,6 +3,7 @@ package com.example.studyspringdatajpa.repository
 import com.example.studyspringdatajpa.entity.Member
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
+import jakarta.persistence.Query
 import jakarta.persistence.TypedQuery
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -82,6 +83,15 @@ class MemberJpaRepository(
             .setParameter("age", age)
 
         return query.singleResult
+    }
+
+    fun bulkAgePlus(age: Int): Int {
+        val query: Query = em.createQuery("update Member m set m.age = m.age + 1 where m.age >= :age")
+            .setParameter("age", age)
+
+        val resultCount: Int = query.executeUpdate()
+
+        return resultCount
     }
 
 }
