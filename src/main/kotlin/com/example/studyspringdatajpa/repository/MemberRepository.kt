@@ -2,6 +2,9 @@ package com.example.studyspringdatajpa.repository
 
 import com.example.studyspringdatajpa.dto.MemberDto
 import com.example.studyspringdatajpa.entity.Member
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -24,4 +27,15 @@ interface MemberRepository: JpaRepository<Member, Long>{
 
     @Query("select m from Member m where m.username in :names")
     fun findByNames(@Param("names") names: List<String>): List<Member>
+
+    fun findByAge(age: Int, pageable: Pageable): Page<Member>
+
+    @Query(value = "select m from Member m left join m.team t",
+        countQuery = "select count(m) from Member m")
+    fun findWithCountByAge(age: Int, pageable: Pageable): Page<Member>
+
+    fun findSliceByAge(age: Int, pageable: Pageable): Slice<Member>
+
+    fun findListByAge(age: Int, pageable: Pageable): List<Member>
+
 }

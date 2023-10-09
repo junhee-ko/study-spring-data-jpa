@@ -5,6 +5,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Slice
+import org.springframework.data.domain.Sort
 import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
 
@@ -136,5 +140,101 @@ class MemberRepositoryTest{
         val result: List<Member> = memberRepository.findByNames(listOf("member1", "member2"))
 
         assertThat(result.size).isEqualTo(2)
+    }
+
+    @Test
+    fun paging() {
+        val member1 = Member(username = "member1", age = 20, team = null)
+        val member2 = Member(username = "member2", age = 20, team = null)
+        val member3 = Member(username = "member3", age = 20, team = null)
+        val member4 = Member(username = "member4", age = 20, team = null)
+        val member5 = Member(username = "member5", age = 20, team = null)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+        memberRepository.save(member3)
+        memberRepository.save(member4)
+        memberRepository.save(member5)
+
+        val pageRequest: PageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"))
+
+        val page: Page<Member> = memberRepository.findByAge(
+            age = 20,
+            pageable = pageRequest,
+        )
+
+        assertThat(page.content.size).isEqualTo(3)
+        assertThat(page.totalElements).isEqualTo(5)
+        assertThat(page.number).isEqualTo(0)
+        assertThat(page.isFirst).isTrue()
+        assertThat(page.hasNext()).isTrue()
+    }
+
+    @Test
+    fun pagingWithSlice() {
+        val member1 = Member(username = "member1", age = 20, team = null)
+        val member2 = Member(username = "member2", age = 20, team = null)
+        val member3 = Member(username = "member3", age = 20, team = null)
+        val member4 = Member(username = "member4", age = 20, team = null)
+        val member5 = Member(username = "member5", age = 20, team = null)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+        memberRepository.save(member3)
+        memberRepository.save(member4)
+        memberRepository.save(member5)
+
+        val pageRequest: PageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"))
+
+        val page: Slice<Member> = memberRepository.findSliceByAge(
+            age = 20,
+            pageable = pageRequest,
+        )
+
+        assertThat(page.content.size).isEqualTo(3)
+//        assertThat(page.totalElements).isEqualTo(5)
+        assertThat(page.number).isEqualTo(0)
+        assertThat(page.isFirst).isTrue()
+        assertThat(page.hasNext()).isTrue()
+    }
+
+    @Test
+    fun pagingWithList() {
+        val member1 = Member(username = "member1", age = 20, team = null)
+        val member2 = Member(username = "member2", age = 20, team = null)
+        val member3 = Member(username = "member3", age = 20, team = null)
+        val member4 = Member(username = "member4", age = 20, team = null)
+        val member5 = Member(username = "member5", age = 20, team = null)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+        memberRepository.save(member3)
+        memberRepository.save(member4)
+        memberRepository.save(member5)
+
+        val pageRequest: PageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"))
+
+        val page: List<Member> = memberRepository.findListByAge(
+            age = 20,
+            pageable = pageRequest,
+        )
+    }
+
+    @Test
+    fun pagingWithCountQuery() {
+        val member1 = Member(username = "member1", age = 20, team = null)
+        val member2 = Member(username = "member2", age = 20, team = null)
+        val member3 = Member(username = "member3", age = 20, team = null)
+        val member4 = Member(username = "member4", age = 20, team = null)
+        val member5 = Member(username = "member5", age = 20, team = null)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+        memberRepository.save(member3)
+        memberRepository.save(member4)
+        memberRepository.save(member5)
+
+        val pageRequest: PageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"))
+
+        val page: Page<Member> = memberRepository.findWithCountByAge(
+            age = 20,
+            pageable = pageRequest,
+        )
     }
 }
