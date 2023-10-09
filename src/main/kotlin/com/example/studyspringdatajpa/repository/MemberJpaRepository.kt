@@ -46,4 +46,14 @@ class MemberJpaRepository(
     fun find(id: Long): Member{
         return em.find(Member::class.java, id)
     }
+
+    fun findByUsernameAndAgeGreaterThan(username: String, age: Int): MutableList<Member> {
+        val query = em.createQuery("select m from Member m where m.username = :username and m.age > :age", Member::class.java)
+            .setParameter("username", username)
+            .setParameter("age", age)
+
+        val resultList: MutableList<Member> = query.resultList
+
+        return resultList
+    }
 }
