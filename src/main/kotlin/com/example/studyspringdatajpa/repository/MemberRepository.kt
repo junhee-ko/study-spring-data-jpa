@@ -11,4 +11,7 @@ interface MemberRepository: JpaRepository<Member, Long>{
 
     @Query(name = "Member.findByUsername") // 사실 이 부분이 없어도 됨. Member entity 에 정의된 Named Query 가 있는지 우선적으로 찾음. 만약에 없으면 메서드 이름으로 쿼리 생성
     fun findByUsername(@Param("username") username: String): List<Member>
+
+    @Query("select m from Member m where m.username = :username and m.age = :age") // 이름이 없는 namedQuery
+    fun findMember(@Param("username") username: String, @Param("age") age: Int): List<Member>
 }
