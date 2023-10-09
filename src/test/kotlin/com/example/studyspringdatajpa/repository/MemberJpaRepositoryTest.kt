@@ -78,4 +78,28 @@ class MemberJpaRepositoryTest{
         assertThat(result.size).isEqualTo(1)
         assertThat(result.get(0)).isEqualTo(member1)
     }
+
+    @Test
+    fun paging() {
+        val member1 = Member(username = "member1", age = 20, team = null)
+        val member2 = Member(username = "member2", age = 20, team = null)
+        val member3 = Member(username = "member3", age = 20, team = null)
+        val member4 = Member(username = "member4", age = 20, team = null)
+        val member5 = Member(username = "member5", age = 20, team = null)
+        memberJpaRepository.save(member1)
+        memberJpaRepository.save(member2)
+        memberJpaRepository.save(member3)
+        memberJpaRepository.save(member4)
+        memberJpaRepository.save(member5)
+
+        val totalCount = memberJpaRepository.totalCount(20)
+        val members = memberJpaRepository.findByPage(
+            age = 20,
+            offset = 0,
+            limit = 3
+        )
+
+        assertThat(totalCount).isEqualTo(5)
+        assertThat(members.size).isEqualTo(3)
+    }
 }

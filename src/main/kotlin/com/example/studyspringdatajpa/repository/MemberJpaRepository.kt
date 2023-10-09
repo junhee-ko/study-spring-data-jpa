@@ -65,4 +65,23 @@ class MemberJpaRepository(
 
         return resultList
     }
+
+    fun findByPage(age: Int, offset: Int, limit: Int): MutableList<Member> {
+        val query: TypedQuery<Member> = em.createQuery("select m from Member m where m.age = :age order by m.username desc", Member::class.java)
+            .setParameter("age", age)
+            .setFirstResult(offset)
+            .setMaxResults(limit)
+
+        val resultList = query.resultList
+
+        return resultList
+    }
+
+    fun totalCount(age: Int): Long {
+        val query: TypedQuery<Long> = em.createQuery("select count(m) from Member m where m.age = :age", Long::class.java)
+            .setParameter("age", age)
+
+        return query.singleResult
+    }
+
 }
