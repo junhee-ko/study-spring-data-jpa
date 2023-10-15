@@ -2,6 +2,7 @@ package com.example.studyspringdatajpa.repository
 
 import com.example.studyspringdatajpa.dto.MemberDto
 import com.example.studyspringdatajpa.entity.Member
+import jakarta.persistence.QueryHint
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.jpa.repository.QueryHints
 import org.springframework.data.repository.query.Param
 
 interface MemberRepository: JpaRepository<Member, Long>{
@@ -55,4 +57,7 @@ interface MemberRepository: JpaRepository<Member, Long>{
 
     @EntityGraph("Member.all")
     fun findNamedEntityGraphByUsername(@Param("username") username: String): List<Member>
+
+    @QueryHints(value = [QueryHint(name = "org.hibernate.readOnly", value = "true")])
+    fun findReadOnlyByUsername(username: String): Member
 }

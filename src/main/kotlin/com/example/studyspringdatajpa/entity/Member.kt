@@ -17,7 +17,7 @@ class Member(
     @Column(name = "member_id")
     val id: Long = 0L,
 
-    val username: String,
+    var username: String,
 
     val age: Int,
 

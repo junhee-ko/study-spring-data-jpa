@@ -393,4 +393,36 @@ class MemberRepositoryTest{
             println("team.name: ${it.team!!.name}")
         }
     }
+
+    @Test
+    fun queryHint() {
+        // given
+        val member = Member(username = "member1", age = 10, team = null)
+        memberRepository.save(member)
+        em.flush()
+        em.clear()
+
+        // when
+        val findMember = memberRepository.findById(member.id).get()
+        findMember.username = "member2" // 변경 감지
+
+        // then
+        em.flush()
+    }
+
+    @Test
+    fun findReadOnlyByUsername() {
+        // given
+        val member = Member(username = "member1", age = 10, team = null)
+        memberRepository.save(member)
+        em.flush()
+        em.clear()
+
+        // when
+        val findMember = memberRepository.findReadOnlyByUsername("member1") // snapshot 만들지 않아, 변경감지 동작 X
+        findMember.username = "member2"
+
+        // then
+        em.flush()
+    }
 }
