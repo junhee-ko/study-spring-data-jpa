@@ -1,11 +1,18 @@
 package com.example.studyspringdatajpa.entity
 
 import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.domain.Persistable
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 
 @Entity
-class Item {
+@EntityListeners(AuditingEntityListener::class)
+class Item: Persistable<Long> {
 
     // entityManager.persist(entity); 를 해야 Id 가 생김
     // 새로운 엔티티를 판단하는 기본 전략
@@ -13,5 +20,16 @@ class Item {
 
     @Id
     @GeneratedValue
-    val id: Long? = null
+    val myId: Long? = null
+
+    @CreatedDate
+    var createdDate: LocalDateTime? = null
+
+    override fun getId(): Long? {
+        return myId
+    }
+
+    override fun isNew(): Boolean {
+        return createdDate == null
+    }
 }
