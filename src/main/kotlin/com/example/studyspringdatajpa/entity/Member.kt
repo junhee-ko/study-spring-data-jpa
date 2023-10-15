@@ -24,7 +24,7 @@ class Member(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     var team: Team?
-): JpaBaseEntity() {
+): BaseEntity() {
 
     override fun toString(): String {
         return "Member(id=$id, username='$username', age=$age)"

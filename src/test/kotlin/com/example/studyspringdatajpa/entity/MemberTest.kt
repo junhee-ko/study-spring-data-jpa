@@ -66,6 +66,8 @@ class MemberTest {
 
         // then
         println("findMember.createdDate " + findMember.createdDate)
-        println("findMember.updatedDate " + findMember.updatedDate)
+        println("findMember.updatedDate " + findMember.lastModifiedDate)
+        println("findMember.createdBy " + findMember.createdBy)
+        println("findMember.lastModifiedBy " + findMember.lastModifiedBy)
     }
 }
