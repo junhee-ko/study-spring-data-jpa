@@ -440,4 +440,9 @@ class MemberRepositoryTest{
         // then
         em.flush()
     }
+
+    @Test
+    fun customRepository() {
+        val findMember = memberRepository.findMemberCustom()
+    }
 }
