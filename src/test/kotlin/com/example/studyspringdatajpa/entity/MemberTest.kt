@@ -1,9 +1,11 @@
 package com.example.studyspringdatajpa.entity
 
+import com.example.studyspringdatajpa.repository.MemberRepository
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
@@ -15,6 +17,9 @@ class MemberTest {
 
     @PersistenceContext
     private lateinit var em: EntityManager
+
+    @Autowired
+    private lateinit var memberRepository: MemberRepository
 
     @Test
     fun testEntity() {
@@ -42,5 +47,25 @@ class MemberTest {
         members.forEach {member ->
             println("member: ${member}, team: ${member.team}")
         }
+    }
+
+
+    @Test
+    fun jpaEventBaseEntity() {
+        // given
+        val member = Member(username = "member1", age = 10, team = null)
+        memberRepository.save(member) // @PrePersist
+
+        member.username = "member2"
+        em.flush()
+        em.clear()
+
+        // when
+        val findMember = memberRepository.findById(member.id).get()
+
+
+        // then
+        println("findMember.createdDate " + findMember.createdDate)
+        println("findMember.updatedDate " + findMember.updatedDate)
     }
 }
