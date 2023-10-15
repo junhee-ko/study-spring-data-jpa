@@ -425,4 +425,19 @@ class MemberRepositoryTest{
         // then
         em.flush()
     }
+
+    @Test
+    fun lock() {
+        // given
+        val member = Member(username = "member1", age = 10, team = null)
+        memberRepository.save(member)
+        em.flush()
+        em.clear()
+
+        // when
+        val findMember = memberRepository.findLockByUsername("member1")
+
+        // then
+        em.flush()
+    }
 }
