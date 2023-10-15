@@ -1,8 +1,8 @@
 package com.example.studyspringdatajpa.repository
 
 import com.example.studyspringdatajpa.entity.Member
+import com.example.studyspringdatajpa.entity.Team
 import jakarta.persistence.EntityManager
-import jakarta.persistence.PersistenceContext
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +21,9 @@ class MemberRepositoryTest{
 
     @Autowired
     private lateinit var memberRepository: MemberRepository
+
+    @Autowired
+    private lateinit var teamJpaRepository: TeamJpaRepository
 
     @Autowired
     private lateinit var em: EntityManager
@@ -281,5 +284,59 @@ class MemberRepositoryTest{
         println("findByUsername: $result")
 
         assertThat(resultCount).isEqualTo(3)
+    }
+
+    @Test
+    fun findMemberLazy() {
+        // given
+        val teamA = Team(name = "teamA")
+        val teamB = Team(name = "teamB")
+        teamJpaRepository.save(teamA)
+        teamJpaRepository.save(teamB)
+
+        val member1 = Member(username = "member1", age = 18, team = teamA)
+        val member2 = Member(username = "member2", age = 19, team = teamB)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        em.flush()
+        em.clear()
+
+        // when
+        val members: List<Member> = memberRepository.findAll()
+
+        // then
+        members.forEach {
+            println("member: ${it}")
+            println("team: ${it.team!!::class.java}")
+            println("team.name: ${it.team!!.name}")
+        }
+    }
+
+    @Test
+    fun findMemberFetchJoin() {
+        // given
+        val teamA = Team(name = "teamA")
+        val teamB = Team(name = "teamB")
+        teamJpaRepository.save(teamA)
+        teamJpaRepository.save(teamB)
+
+        val member1 = Member(username = "member1", age = 18, team = teamA)
+        val member2 = Member(username = "member2", age = 19, team = teamB)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        em.flush()
+        em.clear()
+
+        // when
+        val members: List<Member> = memberRepository.findMemberFetchJoin()
+
+        // then
+        members.forEach {
+            println("member: ${it}")
+            println("team: ${it.team!!::class.java}")
+            println("team.name: ${it.team!!.name}")
+        }
     }
 }
