@@ -339,4 +339,58 @@ class MemberRepositoryTest{
             println("team.name: ${it.team!!.name}")
         }
     }
+
+    @Test
+    fun findEntityGraphByUsername() {
+        // given
+        val teamA = Team(name = "teamA")
+        val teamB = Team(name = "teamB")
+        teamJpaRepository.save(teamA)
+        teamJpaRepository.save(teamB)
+
+        val member1 = Member(username = "member1", age = 18, team = teamA)
+        val member2 = Member(username = "member2", age = 19, team = teamB)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        em.flush()
+        em.clear()
+
+        // when
+        val members: List<Member> = memberRepository.findEntityGraphByUsername("member1")
+
+        // then
+        members.forEach {
+            println("member: ${it}")
+            println("team: ${it.team!!::class.java}")
+            println("team.name: ${it.team!!.name}")
+        }
+    }
+
+    @Test
+    fun findNamedEntityGraphByUsername() {
+        // given
+        val teamA = Team(name = "teamA")
+        val teamB = Team(name = "teamB")
+        teamJpaRepository.save(teamA)
+        teamJpaRepository.save(teamB)
+
+        val member1 = Member(username = "member1", age = 18, team = teamA)
+        val member2 = Member(username = "member2", age = 19, team = teamB)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        em.flush()
+        em.clear()
+
+        // when
+        val members: List<Member> = memberRepository.findNamedEntityGraphByUsername("member1")
+
+        // then
+        members.forEach {
+            println("member: ${it}")
+            println("team: ${it.team!!::class.java}")
+            println("team.name: ${it.team!!.name}")
+        }
+    }
 }

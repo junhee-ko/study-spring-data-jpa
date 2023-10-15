@@ -46,4 +46,13 @@ interface MemberRepository: JpaRepository<Member, Long>{
 
     @Query("select m from Member m left join fetch m.team")
     fun findMemberFetchJoin(): List<Member>
+
+    @EntityGraph(attributePaths = ["team"])
+    override fun findAll(): List<Member>
+
+    @EntityGraph(attributePaths = ["team"])
+    fun findEntityGraphByUsername(@Param("username") username: String): List<Member>
+
+    @EntityGraph("Member.all")
+    fun findNamedEntityGraphByUsername(@Param("username") username: String): List<Member>
 }
