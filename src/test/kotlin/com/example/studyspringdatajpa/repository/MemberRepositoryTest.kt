@@ -587,4 +587,50 @@ class MemberRepositoryTest{
             println(it)
         }
     }
+
+    @Test
+    fun nativeQuery() {
+        // given
+        val teamA = Team(name = "teamA")
+        teamJpaRepository.save(teamA)
+
+        val member1 = Member(username = "member1", age = 10, team = teamA)
+        val member2 = Member(username = "member2", age = 20, team = teamA)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        em.flush()
+        em.clear()
+
+        // when
+        val members: List<Member> = memberRepository.findByNativeQuery("member1")
+
+        // then
+        members.forEach{
+            println(it)
+        }
+    }
+
+    @Test
+    fun nativeQueryWithProjection() {
+        // given
+        val teamA = Team(name = "teamA")
+        teamJpaRepository.save(teamA)
+
+        val member1 = Member(username = "member1", age = 10, team = teamA)
+        val member2 = Member(username = "member2", age = 20, team = teamA)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        em.flush()
+        em.clear()
+
+        // when
+        val members: Page<MemberProjection> = memberRepository.findByNativeProjection(PageRequest.of(0, 10))
+
+        // then
+        members.forEach{
+            println("memberId: ${it.getId()}, username: ${it.getUserName()}, teamName: ${it.getTeamName()}")
+        }
+    }
 }
