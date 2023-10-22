@@ -495,4 +495,96 @@ class MemberRepositoryTest{
         // then
         assertThat(members.size).isEqualTo(1)
     }
+
+    @Test
+    fun projectionsWithInterface() {
+        // given
+        val teamA = Team(name = "teamA")
+        teamJpaRepository.save(teamA)
+
+        val member1 = Member(username = "member1", age = 10, team = teamA)
+        val member2 = Member(username = "member2", age = 20, team = teamA)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        em.flush()
+        em.clear()
+
+        // when
+        val results: List<UsernameOnly> = memberRepository.findProjectionsByUsername("member1")
+
+        // then
+        results.forEach{
+            println(it)
+        }
+    }
+
+    @Test
+    fun projectionsWithDto() {
+        // given
+        val teamA = Team(name = "teamA")
+        teamJpaRepository.save(teamA)
+
+        val member1 = Member(username = "member1", age = 10, team = teamA)
+        val member2 = Member(username = "member2", age = 20, team = teamA)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        em.flush()
+        em.clear()
+
+        // when
+        val results: List<UsernameOnlyDto> = memberRepository.findProjectionsWithDtoByUsername("member1")
+
+        // then
+        results.forEach{
+            println(it)
+        }
+    }
+
+    @Test
+    fun projectionsWithDtoAndGeneric() {
+        // given
+        val teamA = Team(name = "teamA")
+        teamJpaRepository.save(teamA)
+
+        val member1 = Member(username = "member1", age = 10, team = teamA)
+        val member2 = Member(username = "member2", age = 20, team = teamA)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        em.flush()
+        em.clear()
+
+        // when
+        val results: List<UsernameOnlyDto> = memberRepository.findProjectionsWithGenericByUsername("member1", UsernameOnlyDto::class.java)
+
+        // then
+        results.forEach{
+            println(it)
+        }
+    }
+
+    @Test
+    fun projectionsWithNested() {
+        // given
+        val teamA = Team(name = "teamA")
+        teamJpaRepository.save(teamA)
+
+        val member1 = Member(username = "member1", age = 10, team = teamA)
+        val member2 = Member(username = "member2", age = 20, team = teamA)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        em.flush()
+        em.clear()
+
+        // when
+        val results: List<NestedClosedProjections> = memberRepository.findProjectionsWithGenericByUsername("member1", NestedClosedProjections::class.java)
+
+        // then
+        results.forEach{
+            println(it)
+        }
+    }
 }
