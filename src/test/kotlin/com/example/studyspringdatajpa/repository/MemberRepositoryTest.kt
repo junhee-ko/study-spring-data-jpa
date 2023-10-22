@@ -3,6 +3,7 @@ package com.example.studyspringdatajpa.repository
 import com.example.studyspringdatajpa.entity.Member
 import com.example.studyspringdatajpa.entity.Team
 import jakarta.persistence.EntityManager
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
 
@@ -444,5 +446,27 @@ class MemberRepositoryTest{
     @Test
     fun customRepository() {
         val findMember = memberRepository.findMemberCustom()
+    }
+
+    @Test
+    fun spec() {
+        // given
+        val teamA = Team(name = "teamA")
+        teamJpaRepository.save(teamA)
+
+        val member1 = Member(username = "member1", age = 10, team = teamA)
+        val member2 = Member(username = "member2", age = 20, team = teamA)
+        memberRepository.save(member1)
+        memberRepository.save(member2)
+
+        em.flush()
+        em.clear()
+
+        // when
+        val specification: Specification<Member> = MemberSpec.username("member1").and(MemberSpec.teamName("teamA"))
+        val members: MutableList<Member> = memberRepository.findAll(specification)
+
+        // then
+        Assertions.assertThat(members.size).isEqualTo(1)
     }
 }
